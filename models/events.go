@@ -66,3 +66,32 @@ func GetEventByID (id int64) (*Event, error) {
 	return &event, nil
 
 }
+
+func (e Event) UpdateEvent () error{
+	query := `
+	UPDATE events
+	SET name = $1, description = $2, location = $3, date_time = $4
+	WHERE id = $5
+	`
+	preparedStatement, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer preparedStatement.Close()
+
+	_ , err = preparedStatement.Exec(e.Name, e.Description, e.Location, e.DateTime, e.ID)
+	return err
+}
+
+func (e Event) DeleteEvent (id int64) error {
+	query := "DELETE FROM events WHERE id = $1"
+	preparedStatement, err := db.DB.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer preparedStatement.Close()
+
+	_ , err = preparedStatement.Exec(e.ID)
+	return err
+}
+	
