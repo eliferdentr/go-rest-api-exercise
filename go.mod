@@ -3,6 +3,7 @@ module eliferden.com/restapi
 go 1.23.1
 
 require (
+	github.com/alexedwards/argon2id v1.0.0 // indirect
 	github.com/bytedance/sonic v1.12.5 // indirect
 	github.com/bytedance/sonic/loader v0.2.1 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
