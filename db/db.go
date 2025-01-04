@@ -29,7 +29,8 @@ func createTables () {
 	CREATE TABLE IF NOT EXISTS USERS (
 	ID SERIAL PRIMARY KEY,
 	EMAIL TEXT NOT NULL UNIQUE,
-	PASSWORD TEXT NOT NULL
+	PASSWORD TEXT NOT NULL,
+	SALT TEXT
 	)
 	`
 	_, err := DB.Exec(creteUsersTable)
@@ -51,6 +52,23 @@ func createTables () {
 	`
 
 	_, err = DB.Exec(createEventsTable)
+	if err != nil {
+		log.Fatalf("Could not create the \"EVENTS\" table: " + err.Error())
+	}
+
+	createRegistrationsTable := `
+	CREATE TABLE IF NOT EXISTS registrations (
+		id SERIAL PRIMARY KEY,
+		user_id INTEGER,
+		event_id INTEGER,
+	CONSTRAINT FK_REGISTRATIONS_USERS FOREIGN KEY (user_id)
+    REFERENCES USERS(ID),
+	CONSTRAINT FK_REGISTRATIONS_EVENTS FOREIGN KEY (event_id)
+    REFERENCES USERS(ID)
+	)
+	`
+
+	_, err = DB.Exec(createRegistrationsTable)
 	if err != nil {
 		log.Fatalf("Could not create the \"EVENTS\" table: " + err.Error())
 	}

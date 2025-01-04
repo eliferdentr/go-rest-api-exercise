@@ -3,13 +3,12 @@ package utils
 import (
 	"crypto/rand"
 	"encoding/base64"
-	"fmt"
-
+	"log"
 	"golang.org/x/crypto/argon2"
 )
 
 const (
-	time    = 1
+	timeStep    = 1
 	memory  = 64 * 1024
 	threads = 4
 	keyLen  = 32
@@ -19,10 +18,10 @@ func HashPasswordArgon2id(password string) (string, string, error) {
 	salt := make([]byte, 16)
 	_, err := rand.Read(salt)
 	if (err != nil) {
-		fmt.Println(err)
+		log.Println(err)
 		return "", "", err
 	}
-	hash := argon2.IDKey([]byte(password), salt, time, memory, uint8(threads), keyLen)
+	hash := argon2.IDKey([]byte(password), salt, timeStep, memory, uint8(threads), keyLen)
 	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
 	b64Salt := base64.RawStdEncoding.EncodeToString(salt)
  
@@ -34,8 +33,10 @@ func CompareHashArgon2id(password, b64Salt, hashedPassword string) bool {
 	if err != nil {
 		return false
 	}
-	hash := argon2.IDKey([]byte(password), salt, time, memory, uint8(threads), keyLen)
+	hash := argon2.IDKey([]byte(password), salt, timeStep, memory, uint8(threads), keyLen)
  
 	b64Hash := base64.RawStdEncoding.EncodeToString(hash)
+	log.Println("password " +b64Hash)
+	log.Println("hashed password" +hashedPassword)
 	return b64Hash == hashedPassword
 }
